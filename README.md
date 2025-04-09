@@ -24,10 +24,43 @@ Ce repertoire contient :
 + 02-clientWifi : code pour un client wifi sur esp32
 
 
-Les données envoyées sont : 
-'''bash
+Les données envoyées par le client Ethernet (et aussi Wifi) sont au format JSON: 
+```bash
 data = {
     "id": device_id,
     "temperature": temperature
 }
-'''
+```
+
+Il sera nécessaire d'installer des package python. Il est recommandé d'installer les packages dans des environnements virtuels. Ils permettent de segmenter les projets avec des versions spécifiques de Python et des des bibliothèques installées uniquement pour le projet.
+our créer un environnement virtuel avec venv, on fait :
+
+python -m venv <nom+nom_environnement_virtuel>
+
+Et pour activer un environnement virtuel sur Windows Mac, les OS bases sur UNIX :
+
+#### Sur Windows :
+```bash
+source cheim+nom_environnement_virtuel\Scripts\activate
+```
+#### Sur Mac ou Linux :
+```bash
+source chemin+nom_environnement_virtuel/activate
+```
+Les packets à installer pour le client : 
+```bash
+pip install scapy
+pip install requests
+```
+
+Le lancement du serveur s'effectue très simplement : 
+```bash
+sudo python3 00-serveurHttp.py 
+```
+
+Pour le client : 
+```bash
+python3 01-clientEthernet.py 
+```
+
+
