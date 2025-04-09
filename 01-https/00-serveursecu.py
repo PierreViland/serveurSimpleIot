@@ -4,6 +4,7 @@ import json
 import time
 import logging
 import socket
+import threading
 
 # Configuration des logs
 logging.basicConfig(
@@ -25,13 +26,11 @@ class RequestHandler(BaseHTTPRequestHandler):
         
         # Afficher les informations SSL (si disponibles)
         try:
-            ssl_info = self.connection.cipher()  # Obtenir les détails du chiffrement
+            ssl_info = self.connection.cipher()
             logger.info("Détails du chiffrement SSL : %s", ssl_info)
         except Exception as e:
             logger.warning("Impossible d'obtenir les détails du chiffrement SSL : %s", e)
 
-        
-        
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
 
@@ -40,7 +39,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             device_id = data.get('id', 'ID inconnu')
             temperature = data.get('temperature', 'Température inconnue')
 
-            # Affichage des données
             current_timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             print(f"{current_timestamp} - ID : {device_id}")
             print(f"Température : {temperature}°C")
@@ -49,7 +47,6 @@ class RequestHandler(BaseHTTPRequestHandler):
             elif temperature < 5:
                 print("+++++++++++ALERTE GRAND FROID+++++++++++")
 
-            # Réponse au client
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
@@ -78,34 +75,53 @@ class RequestHandler(BaseHTTPRequestHandler):
             logger.error("Erreur inattendue avec %s : %s", self.client_address, e)
 
     def log_message(self, format, *args):
-        return  # Désactive les logs HTTP standards pour une console plus propre
+        return  # Pour garder la console propre
 
 if __name__ == "__main__":
     server = HTTPServer((HOST, PORT), RequestHandler)
 
     try:
-        # Créer un contexte SSL
+        # Configuration du contexte SSL
         ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-
-
-        ssl_context.load_cert_chain(certfile='./CertKey/serveur/serveurIotMaison13.crt', keyfile='./CertKey/serveur/serveurIotMaison13.key')
-
-
+        ssl_context.load_cert_chain(certfile='./CertKey/serveur/serveurIotMaison13.crt',
+                                    keyfile='./CertKey/serveur/serveurIotMaison13.key')
         ssl_context.load_verify_locations(cafile='./CertKey/CA/CA_Cyber.crt')
-        ssl_context.verify_mode = ssl.CERT_REQUIRED  # Exige un certificat client valide
+        ssl_context.verify_mode = ssl.CERT_REQUIRED
 
-        # Emballer le socket avec SSL
-        server.socket = ssl_context.wrap_socket(server.socket, server_side=True)
+        # Remplacer le serveur standard par une boucle d’acceptation personnalisée
         logger.info("Serveur HTTPS démarré sur %s:%d", HOST, PORT)
 
-        server.serve_forever()
+        # Remplacement de .serve_forever()
+        while True:
+            try:
+                newsocket, fromaddr = server.socket.accept()
+                logger.info("Connexion entrante de %s", fromaddr)
+
+                try:
+                    # Tentative de handshake SSL
+                    connstream = ssl_context.wrap_socket(newsocket, server_side=True)
+                    threading.Thread(target=server.process_request, args=(connstream, fromaddr)).start()
+
+                except ssl.SSLError as ssl_err:
+                    logger.warning(" Tentative rejetée avec certificat non valide depuis %s : %s", fromaddr, ssl_err)
+                    newsocket.close()
+
+                except Exception as e:
+                    logger.error("Erreur lors du traitement de la connexion de %s : %s", fromaddr, e)
+                    newsocket.close()
+
+            except KeyboardInterrupt:
+                break
+
+            except Exception as e:
+                logger.error("Erreur dans la boucle principale du serveur : %s", e)
 
     except ssl.SSLError as e:
-        logger.error("Erreur lors de l'établissement de la connexion SSL : %s", e)
+        logger.error("Erreur SSL lors de l'initialisation : %s", e)
     except socket.error as e:
-        logger.error("Erreur de socket lors de l'initialisation du serveur : %s", e)
+        logger.error("Erreur de socket : %s", e)
     except Exception as e:
-        logger.critical("Erreur inattendue lors du démarrage du serveur : %s", e)
+        logger.critical("Erreur critique lors du démarrage : %s", e)
     finally:
         logger.info("Arrêt du serveur.")
         server.server_close()
