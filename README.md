@@ -1,6 +1,6 @@
 ## Serveur Maison
 
-Serveur réalisé en Python en écoute sur le port 80. Il attend l'envoi d'un JSON avec l'ID d'un appareil et la température.
+Serveur réalisé en Python en écoute sur le port 80 ou 443 (possibilité de modifier). Il attend l'envoi d'un JSON avec l'ID d'un appareil et la température.
 
 ## Installation
 
@@ -43,13 +43,13 @@ Et pour activer un environnement virtuel sur Windows Mac, les OS bases sur UNIX 
 ```bash
 source cheim+nom_environnement_virtuel\Scripts\activate
 ```
-#### Sur Mac ou Linux :
+#### Sur Linux :
 ```bash
 source chemin+nom_environnement_virtuel/activate
 ```
 Les packets à installer pour le client : 
 ```bash
-pip install scapy
+pip install scapy  #Util pour l'usurpation
 pip install requests
 ```
 
