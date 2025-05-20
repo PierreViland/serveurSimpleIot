@@ -23,6 +23,18 @@ PORT = 443  # Port HTTPS standard
 class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
         logger.info("Réception d'une requête POST de %s", self.client_address)
+
+        try:
+                client_cert = self.connection.getpeercert()
+                if client_cert:
+                     logger.info("Certificat client reçu :")
+                     logger.info("Sujet : %s", client_cert.get('subject'))
+                     logger.info("Émetteur : %s", client_cert.get('issuer')) 
+                else:
+                     logger.warning("Aucun certificat client présenté.")
+        except Exception as e:
+                logger.error("Impossible d'extraire le certificat client : %s", e)
+
         
         # Afficher les informations SSL (si disponibles)
         try:
@@ -82,6 +94,7 @@ if __name__ == "__main__":
 
     try:
         # Configuration du contexte SSL
+        #ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_context.load_cert_chain(certfile='./certificat/serverIot_30.crt',
                                     keyfile='./certificat/serverIot_30.key')
