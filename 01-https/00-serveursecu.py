@@ -6,6 +6,11 @@ import logging
 import socket
 import threading
 
+certServeur="./certificat/serverIot_30.crt"
+keyServeur="./certificat/serverIot_30.key"                                                  
+certCA="./certificat/caIot.crt"
+
+
 # Configuration des logs
 logging.basicConfig(
     level=logging.DEBUG,
@@ -96,9 +101,9 @@ if __name__ == "__main__":
         # Configuration du contexte SSL
  # Forcer TLS 1.2 uniquement
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        ssl_context.load_cert_chain(certfile='./certificat/serverIot_30.crt',
-                                    keyfile='./certificat/serverIot_30.key')
-        ssl_context.load_verify_locations(cafile='./certificat/caIot.crt')
+        ssl_context.load_cert_chain(certServeur,
+                                    keyServeur)
+        ssl_context.load_verify_locations(certCA)
         ssl_context.verify_mode = ssl.CERT_REQUIRED
     
         logger.info("Serveur HTTPS (TLS 1.2) démarré sur %s:%d", HOST, PORT)
