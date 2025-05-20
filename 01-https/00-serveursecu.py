@@ -83,9 +83,9 @@ if __name__ == "__main__":
     try:
         # Configuration du contexte SSL
         ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ssl_context.load_cert_chain(certfile='./CertKey/serveur/serveurIotMaison13.crt',
-                                    keyfile='./CertKey/serveur/serveurIotMaison13.key')
-        ssl_context.load_verify_locations(cafile='./CertKey/CA/CA_Cyber.crt')
+        ssl_context.load_cert_chain(certfile='./certificat/serverIot_30.crt',
+                                    keyfile='./certificat/serverIot_30.key')
+        ssl_context.load_verify_locations(cafile='./certificat/caIot.crt')
         ssl_context.verify_mode = ssl.CERT_REQUIRED
 
         # Remplacer le serveur standard par une boucle d’acceptation personnalisée
