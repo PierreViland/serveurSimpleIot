@@ -94,15 +94,15 @@ if __name__ == "__main__":
 
     try:
         # Configuration du contexte SSL
-        #ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+ # Forcer TLS 1.2 uniquement
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         ssl_context.load_cert_chain(certfile='./certificat/serverIot_30.crt',
                                     keyfile='./certificat/serverIot_30.key')
         ssl_context.load_verify_locations(cafile='./certificat/caIot.crt')
         ssl_context.verify_mode = ssl.CERT_REQUIRED
+    
+        logger.info("Serveur HTTPS (TLS 1.2) démarré sur %s:%d", HOST, PORT)
 
-        # Remplacer le serveur standard par une boucle d’acceptation personnalisée
-        logger.info("Serveur HTTPS démarré sur %s:%d", HOST, PORT)
 
         # Remplacement de .serve_forever()
         while True:
