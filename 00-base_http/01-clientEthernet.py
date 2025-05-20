@@ -5,10 +5,10 @@ from scapy.all import IP, TCP, send
 import random
 
 
-server_ip = "192.168.1.13" #Addr IP du serveur a attaque
+server_ip = "192.168.1.30" #Addr IP du serveur a attaque
 
 
-device_id = "deviceTestEthernet"  # Nom du capteur a attaquer
+device_id = "device00"  # Nom du capteur a attaquer
 
 
 temperature = random.randint(15, 20)# Temperature (mettre une valeur aléatoire)
@@ -30,10 +30,10 @@ headers = {
     "Content-Type": "application/json"
 }
 
-print("Depart Attaque")
+print("Depart envoi")
 while True:
     
-    print("----->Envoi temperature aleatoir")
+    print("----->Envoi temperature aleatoire")
     response = requests.post(server_url, data=json.dumps(data), headers=headers)
 
     # Affichage de la réponse du serveur
