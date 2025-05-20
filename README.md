@@ -7,8 +7,8 @@ Serveur réalisé en Python en écoute sur le port 80 ou 443 (possibilité de mo
 Clonez le repository avec la commande suivante :
 
 ```bash
-git clone https://github.com/PierreViland/serveurMaison.git
-cd serveurMaison
+git clone [https://github.com/PierreViland/serveurMaison.git](https://github.com/PierreViland/serveurSimpleIot.git)
+cd serveurSimpleIot
 ```
 
 ## Utilisation de HTTP (non sécurisé)
