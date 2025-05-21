@@ -19,17 +19,17 @@ def start_prometheus_server():
 # Créer un compteur pour les requêtes POST
 post_requests_counter = Counter('http_post_nb_requete', 'Nombre total de requete POST')
 
+#Creation d'un historgramme pour le temps de réponse
 response_time_histogram = Histogram(
     'http_temps_reponse', 
     'Histogramme des temps de réponse HTTP (s)',
     buckets=[0.001, 0.0015, 0.002, 0.003, 0.005, 0.0075]  # Définir les buckets pour l'histogramme
 )
-# Variable globale pour stocker l'heure de la dernière requête
-last_request_time = None
 
 # Créer une métrique pour le temps écoulé entre les requêtes
 time_between_requests_gauge = Gauge('http_time_between_requests_seconds', 'Temps entre chaque requête en secondes')
-
+# Variable globale pour stocker l'heure de la dernière requête
+last_request_time = None  
 
 
 class RequestHandler(BaseHTTPRequestHandler):
