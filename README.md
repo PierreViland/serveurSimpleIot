@@ -63,4 +63,11 @@ Pour le client :
 python3 01-clientEthernet.py 
 ```
 
+## Utilisation de HTTPS
+Le principe est le même mais il y a une authentification mutuelle et un chiffrement entre le client et le serveur. 
+Il faut donc ajouter pour le serveur et le client : 
+- sa clef privée
+- son certificat signé par une CA
+- Le certificat du CA
 
+** Remarque ** deux branches existent permettant d'imposer respectivement au serveur et au client l'utilisation du Tls V1.2
