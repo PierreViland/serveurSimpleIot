@@ -6,7 +6,7 @@ from prometheus_client import start_http_server, Counter, Histogram, Gauge
 
 # Configuration du serveur
 HOST = '0.0.0.0'  # Écoute sur toutes les interfaces réseau
-PORT = 8080        # Port d'écoute
+PORT = 80        # Port d'écoute
 
 PROMETHEUS_PORT = 8800  # Port pour exposer les métriques Prometheus
 
@@ -14,6 +14,7 @@ PROMETHEUS_PORT = 8800  # Port pour exposer les métriques Prometheus
 def start_prometheus_server():
     start_http_server(PROMETHEUS_PORT)
     print(f"Serveur Prometheus en écoute sur le port {PROMETHEUS_PORT}...")
+
 
 # Créer un compteur pour les requêtes POST
 post_requests_counter = Counter('http_post_nb_requete', 'Nombre total de requete POST')
@@ -30,9 +31,11 @@ last_request_time = None
 time_between_requests_gauge = Gauge('http_time_between_requests_seconds', 'Temps entre chaque requête en secondes')
 
 
+
 class RequestHandler(BaseHTTPRequestHandler):
     def do_POST(self):
-        # Longueur des données reçues
+        global last_request_time
+	# Longueur des données reçues
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
 
@@ -48,13 +51,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         # Mettre à jour l'heure de la dernière requête
         last_request_time = start_time
         
-        
         # Incrémenter le compteur de requêtes POST
         post_requests_counter.inc()
         
         # Longueur des données reçues
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
         print(f"Nombre total de requêtes POST reçues : {post_requests_counter._value.get()}")
 
 
