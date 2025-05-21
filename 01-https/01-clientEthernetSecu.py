@@ -39,9 +39,10 @@ def main():
     # Création du contexte SSL
     context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=ca_cert_path)
     context.load_cert_chain(certfile=client_cert_path, keyfile=client_key_path)
-    #context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2) 
+    # Forcer l'utilisation exclusive de TLSv1.2 :
     context.minimum_version = ssl.TLSVersion.TLSv1_2
-    context.set_ciphers("ECDHE+AESGCM")
+    context.maximum_version = ssl.TLSVersion.TLSv1_2  # Limite la version à TLSv1.2 uniquement
+
 
     while True:
         try:
