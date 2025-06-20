@@ -4,7 +4,7 @@ import time
 import random
 
 # Configuration réseau
-server_url = "192.168.1.30"
+server_url = "192.168.1.10"
 server_port = 80  # HTTP standard
 device_id = "deviceTestEthernet"
 
