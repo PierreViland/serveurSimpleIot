@@ -2,7 +2,7 @@
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
 String ssid = "cielCyber"; 
-String password = "rockstar"; 
+String password = "XXXX"; 
 String serverURL = "http://192.168.1.10";  
 const uint16_t serverPort = 80;                
 String deviceID = "CapteurSalle";
